@@ -1,0 +1,21 @@
+{
+  "name": "ai-imagisphere",
+  "version": "1.0.0",
+  "description": "A Platform to create and share AI generated images with the world.",
+  "main": "index.js",
+  "scripts": {
+    "client": "cd client && npm run dev",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keertyverma/ai-imagisphere.git"
+  },
+  "keywords": [],
+  "author": "Keerty Verma",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/keertyverma/ai-imagisphere/issues"
+  },
+  "homepage": "https://github.com/keertyverma/ai-imagisphere#readme"
+}
