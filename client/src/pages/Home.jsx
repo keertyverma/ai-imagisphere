@@ -1,10 +1,21 @@
 import { useState } from "react";
 
-import { Loader } from "../components";
+import { Card, Loader } from "../components";
 
 const Home = () => {
   const [isLoading, setLoading] = useState(false);
-  const [searchText, setSearchText] = useState("dfsdfsdf");
+  const [searchText, setSearchText] = useState("");
+
+  const RenderCards = ({ data, title }) => {
+    if (data?.length > 0)
+      return data.map((post) => <Card key={post._id} {...post} />);
+
+    return (
+      <h2 className="mt-5 font-bold text-xl text-[#6449ff] uppercase">
+        {title}
+      </h2>
+    );
+  };
 
   return (
     <section className="max-w-7xl mx-auto">
@@ -24,13 +35,17 @@ const Home = () => {
         ) : (
           <>
             {searchText && (
-              <h2 className="font-medium  text-gray-500 text-xl mb-3">
+              <h2 className="font-medium text-xl text-gray-500  mb-3">
                 Showing results for{" "}
                 <span className="text-gray-900">{searchText}</span>
               </h2>
             )}
             <div className="grid lg:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 grid-cols-1 gap-3">
-              Render posts...
+              {searchText ? (
+                <RenderCards data={[]} title="No search result found" />
+              ) : (
+                <RenderCards data={[]} title="No posts found" />
+              )}
             </div>
           </>
         )}
