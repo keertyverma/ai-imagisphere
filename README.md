@@ -1,6 +1,7 @@
 # ai-imagisphere
 
 A Platform to create and share AI generated images with the world.
+Using Open AI [DALL-E2](https://openai.com/product/dall-e-2) API
 
 ## Feature
 
@@ -11,5 +12,6 @@ A Platform to create and share AI generated images with the world.
 
 - React
 - Javascript
+- Tailwind CSS
 - Node
 - MongDB

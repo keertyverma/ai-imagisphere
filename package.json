@@ -17,5 +17,10 @@
   "bugs": {
     "url": "https://github.com/keertyverma/ai-imagisphere/issues"
   },
-  "homepage": "https://github.com/keertyverma/ai-imagisphere#readme"
+  "homepage": "https://github.com/keertyverma/ai-imagisphere#readme",
+  "devDependencies": {
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.24",
+    "tailwindcss": "^3.3.2"
+  }
 }
