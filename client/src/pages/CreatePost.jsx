@@ -30,7 +30,38 @@ const CreatePost = () => {
     setPost((prev) => ({ ...prev, prompt: randomPrompt }));
   };
 
-  const generateImage = () => {};
+  const generateImage = async () => {
+    if (post.prompt) {
+      try {
+        setGenerating(true);
+
+        const response = await fetch("http://localhost:8080/api/v1/dalle", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ prompt: post.prompt }),
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          setPost((prev) => ({
+            ...prev,
+            photo: `data:image/jpeg;base64,${data.photo}`,
+          }));
+        } else {
+          alert(data.message);
+        }
+      } catch (error) {
+        console.log(error);
+        alert(error);
+      } finally {
+        setGenerating(false);
+      }
+    } else {
+      alert("Please enter a prompt");
+    }
+  };
 
   return (
     <section className="max-w-7xl mx-auto">
@@ -96,7 +127,7 @@ const CreatePost = () => {
         </div>
         <div className="mt-10">
           <p className="mt-2 text-[14px] text-gray-600">
-            You can share image with community, once image is created
+            You can share image with the community, once image is created
           </p>
           <button
             type="submit"
