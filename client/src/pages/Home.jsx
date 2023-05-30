@@ -1,21 +1,46 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { Card, Loader } from "../components";
+
+const RenderCards = ({ data, title }) => {
+  if (data?.length > 0)
+    return data.map((post) => <Card key={post._id} {...post} />);
+
+  return (
+    <h2 className="mt-5 font-bold text-xl text-[#6449ff] uppercase">{title}</h2>
+  );
+};
 
 const Home = () => {
   const [isLoading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
+  const [posts, setPosts] = useState([]);
 
-  const RenderCards = ({ data, title }) => {
-    if (data?.length > 0)
-      return data.map((post) => <Card key={post._id} {...post} />);
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        setLoading(true);
 
-    return (
-      <h2 className="mt-5 font-bold text-xl text-[#6449ff] uppercase">
-        {title}
-      </h2>
-    );
-  };
+        const response = await fetch("http://localhost:8080/api/v1/post", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          setPosts(result.data.reverse());
+        }
+      } catch (error) {
+        alert(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, []);
 
   return (
     <section className="max-w-7xl mx-auto">
@@ -44,7 +69,7 @@ const Home = () => {
               {searchText ? (
                 <RenderCards data={[]} title="No search result found" />
               ) : (
-                <RenderCards data={[]} title="No posts found" />
+                <RenderCards data={posts} title="No posts found" />
               )}
             </div>
           </>

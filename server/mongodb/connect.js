@@ -4,7 +4,7 @@ const connectDB = (uri) => {
   mongoose.set("strictQuery", true);
 
   mongoose
-    .connect(uri)
+    .connect(uri, { dbName: "imagisphere" })
     .then(() => console.log("MongoDB connected"))
     .catch((err) => console.log(err));
 };

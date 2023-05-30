@@ -182,7 +182,7 @@ const CreatePost = () => {
             type="submit"
             className="mt-3 w-full sm:w-auto bg-[#6469ff] text-white font-medium text-sm rounded-md px-5 py-2.5 text-center"
           >
-            {isLoading ? "Sharing" : "Share with community"}
+            {isLoading ? "Sharing..." : "Share with community"}
           </button>
         </div>
       </form>
