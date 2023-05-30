@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { preview } from "../assets";
+import { preview, uploadImage } from "../assets";
 import { FormField, Loader } from "../components";
 import { getRandomPrompt } from "../utils";
 
@@ -17,8 +17,31 @@ const CreatePost = () => {
   const [isGenerating, setGenerating] = useState(false);
   const [isLoading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    try {
+      setLoading(true);
+
+      if (post.name && post.prompt && post.photo) {
+        const response = await fetch("http://localhost:8080/api/v1/post", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(post),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log("data = ", data);
+          navigate("/");
+        }
+      } else {
+        alert("Please enter prompt and generate an image");
+      }
+    } catch (error) {
+      alert(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -30,28 +53,54 @@ const CreatePost = () => {
     setPost((prev) => ({ ...prev, prompt: randomPrompt }));
   };
 
+  const getImageFromLocalDir = async (file) => {
+    // convert jpeg to base64 string format and update photo in post state
+    try {
+      const response = await fetch(file);
+      const blob = await response.blob();
+
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        const base64String = e.target.result.split(",")[1];
+        setPost((prev) => ({
+          ...prev,
+          photo: `data:image/jpeg;base64,${base64String}`,
+        }));
+      };
+
+      reader.readAsDataURL(blob);
+    } catch (error) {
+      console.error("Error fetching or converting image");
+    }
+  };
+
   const generateImage = async () => {
     if (post.prompt) {
       try {
         setGenerating(true);
 
-        const response = await fetch("http://localhost:8080/api/v1/dalle", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ prompt: post.prompt }),
-        });
+        // Workaround: Billing issue with DALLE-2 AI API
+        await getImageFromLocalDir(uploadImage);
 
-        const data = await response.json();
-        if (response.ok) {
-          setPost((prev) => ({
-            ...prev,
-            photo: `data:image/jpeg;base64,${data.photo}`,
-          }));
-        } else {
-          alert(data.message);
-        }
+        // // Uncomment this if want to fetc
+        // const response = await fetch("http://localhost:8080/api/v1/dalle", {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify({ prompt: post.prompt }),
+        // });
+
+        // const data = await response.json();
+        // if (response.ok) {
+        //   setPost((prev) => ({
+        //     ...prev,
+        //     photo: `data:image/jpeg;base64,${data.photo}`,
+        //   }));
+        // } else {
+        //   alert(data.message);
+        // }
       } catch (error) {
         console.log(error);
         alert(error);
@@ -78,7 +127,7 @@ const CreatePost = () => {
             label="Your Name"
             type="text"
             name="name"
-            placeholder="Keerty V"
+            placeholder=""
             value={post.name}
             handleChange={handleChange}
             required
